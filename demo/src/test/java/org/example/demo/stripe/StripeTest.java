@@ -50,4 +50,7 @@ public class StripeTest {
         System.out.println("Success! Stripe Price ID: " + result.getStripePriceId());
         System.out.println("Success! Database ID: " + result.getId());
     }
+
+
+
 }
