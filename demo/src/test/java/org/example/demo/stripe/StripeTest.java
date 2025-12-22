@@ -22,7 +22,7 @@ public class StripeTest {
     private StripeConfig stripeConfig;
 
     /**
-     * create Product
+     * create StripeProduct
      */
     @Test
     public void createProduct() throws StripeException {
