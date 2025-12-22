@@ -6,11 +6,12 @@ import lombok.EqualsAndHashCode;
 
 /**
  * 产品表（通用）
+ * Product table (common)
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @TableName("product")
-public class Product extends BaseEntity<Product> {
+public class Product extends BaseEntity {
 
     /**
      * 产品包代码

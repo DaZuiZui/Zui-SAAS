@@ -9,13 +9,14 @@ import org.example.demo.domain.entity.BaseEntity;
 
 /**
  * Stripe平台产品表
+ * Stripe platform product table
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName("stripe_product")
-public class StripeProduct extends BaseEntity<StripeProduct> {
+public class StripeProduct extends BaseEntity {
 
     /**
      * 关联的通用产品ID
@@ -55,6 +56,6 @@ public class StripeProduct extends BaseEntity<StripeProduct> {
     /**
      * 计费周期：month/year
      */
-    private String interval;
+    private String billingInterval;
 }
 

@@ -2,7 +2,6 @@ package org.example.demo.stripe;
 
 
 
-import jakarta.annotation.Resource;
 import org.example.demo.config.StripeConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,6 +11,8 @@ import com.stripe.model.Product;
 import com.stripe.param.ProductCreateParams;
 import com.stripe.param.PriceCreateParams;
 import com.stripe.model.Price;
+
+import javax.annotation.Resource;
 
 /**
  * stripe test
