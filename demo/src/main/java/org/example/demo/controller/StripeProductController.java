@@ -2,6 +2,7 @@ package org.example.demo.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.stripe.exception.StripeException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.example.demo.common.response.ResponseCode;
@@ -41,7 +42,7 @@ public class StripeProductController {
      */
     @GetMapping("/page")
     public ResponseCode<Page<StripeProduct>> page(@RequestParam(defaultValue = "1") Integer current,
-                                                   @RequestParam(defaultValue = "10") Integer size) {
+                                                  @RequestParam(defaultValue = "10") Integer size) {
         logger.info("Fetching stripe products page: {}, size: {}", current, size);
         return ResponseCode.buildResponse(stripeProductService.page(new Page<>(current, size)));
     }
@@ -85,9 +86,12 @@ public class StripeProductController {
      * Create Stripe product
      */
     @PostMapping
-    public ResponseCode<Boolean> save(@RequestBody StripeProduct stripeProduct) {
+    public ResponseCode<StripeProduct> save(@RequestBody StripeProduct stripeProduct) throws StripeException {
         logger.info("Creating new stripe product: {}", stripeProduct.getName());
-        return ResponseCode.buildResponse(stripeProductService.save(stripeProduct));
+
+        StripeProduct result = stripeProductService.createStripeProduct(stripeProduct);
+        return ResponseCode.buildResponse(result);
+
     }
 
     /**

@@ -3,6 +3,7 @@ package org.example.demo.stripe;
 
 
 import org.example.demo.config.StripeConfig;
+import org.example.demo.service.StripeProductService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import com.stripe.Stripe;
@@ -21,35 +22,32 @@ import javax.annotation.Resource;
 public class StripeTest {
     @Resource
     private StripeConfig stripeConfig;
+    @Resource
+    private StripeProductService productService;
 
     /**
      * create StripeProduct
      */
     @Test
     public void createProduct() throws StripeException {
-        Stripe.apiKey =  stripeConfig.key;
+        // 构造测试数据
+        // Build test data
+        org.example.demo.domain.dto.StripeProduct stripeProduct = new org.example.demo.domain.dto.StripeProduct();
+        stripeProduct.setProductId(1L); // 关联的通用产品ID
+        stripeProduct.setName("Starter Subscription");
+        stripeProduct.setDescription("HK$120/Month subscription");
+        stripeProduct.setUnitAmount(12000L); // 价格：120港币（1200分）
+        stripeProduct.setCurrency("hkd");
+        stripeProduct.setBillingInterval("month"); // 计费周期：月
 
-        ProductCreateParams productParams =
-                ProductCreateParams.builder()
-                        .setName("Starter Subscription")
-                        .setDescription("$12/Month subscription")
-                        .build();
-        Product product = Product.create(productParams);
-        System.out.println("Success! Here is your starter subscription product id: " + product.getId());
+        // 调用服务创建产品
+        // Call service to create product
+        org.example.demo.domain.dto.StripeProduct result = productService.createStripeProduct(stripeProduct);
 
-        PriceCreateParams params =
-                PriceCreateParams
-                        .builder()
-                        .setProduct(product.getId())
-                        .setCurrency("usd")
-                        .setUnitAmount(1200L)
-                        .setRecurring(
-                                PriceCreateParams.Recurring
-                                        .builder()
-                                        .setInterval(PriceCreateParams.Recurring.Interval.MONTH)
-                                        .build())
-                        .build();
-        Price price = Price.create(params);
-        System.out.println("Success! Here is your starter subscription price id: " + price.getId());
+        // 打印结果
+        // Print result
+        System.out.println("Success! Stripe Product ID: " + result.getStripeProductId());
+        System.out.println("Success! Stripe Price ID: " + result.getStripePriceId());
+        System.out.println("Success! Database ID: " + result.getId());
     }
 }
