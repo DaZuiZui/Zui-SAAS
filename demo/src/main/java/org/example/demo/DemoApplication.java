@@ -1,19 +1,15 @@
 package org.example.demo;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
+@MapperScan("org.example.demo.mapper")
 public class DemoApplication {
 
-    private static final Logger logger = LogManager.getLogger(DemoApplication.class);
-
     public static void main(String[] args) {
-        logger.info("Starting DemoApplication...");
         SpringApplication.run(DemoApplication.class, args);
-        logger.info("DemoApplication started successfully!");
     }
 
 }
