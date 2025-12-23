@@ -1,6 +1,8 @@
 package org.example.demo.stripe;
 
 import com.stripe.exception.StripeException;
+import org.example.demo.domain.dto.CheckoutSessionResponse;
+import org.example.demo.domain.dto.CreateCheckoutSessionRequest;
 import org.example.demo.domain.entity.Customer;
 import org.example.demo.service.CustomerService;
 import org.junit.jupiter.api.Test;
@@ -14,10 +16,10 @@ import javax.annotation.Resource;
  */
 @SpringBootTest
 public class CustomerTest {
-    
+
     @Resource
     private CustomerService customerService;
-    
+
     /**
      * 测试创建Stripe客户
      * Test create Stripe customer
@@ -32,15 +34,40 @@ public class CustomerTest {
         customer.setName("Test User");
         customer.setPhone("+85298765432");
         customer.setAddress("Hong Kong");
-        
+
         // 调用服务创建客户
         // Call service to create customer
         Customer result = customerService.createStripeCustomer(customer);
-        
+
         // 打印结果
         // Print result
         System.out.println("Success! Stripe Customer ID: " + result.getStripeCustomerId());
         System.out.println("Success! Database ID: " + result.getId());
         System.out.println("Success! User ID: " + result.getUserId());
+    }
+
+    /**
+     * 测试创建结账会话
+     * Test create checkout session
+     */
+    @Test
+    public void testCreateCheckoutSession() throws StripeException {
+        // 构造测试数据
+        // Build test data
+        CreateCheckoutSessionRequest request = new CreateCheckoutSessionRequest();
+        request.setUserId(1001L); // 使用已存在的用户ID
+        request.setPriceId("price_1Sh5yHLmuHVoRgEWkwERKweq"); // 使用已创建的价格ID
+        request.setSuccessUrl("https://example.com/success?session_id={CHECKOUT_SESSION_ID}");
+        request.setCancelUrl("https://example.com/cancel");
+
+        // 调用服务创建结账会话
+        // Call service to create checkout session
+        CheckoutSessionResponse response = customerService.createCheckoutSession(request);
+
+        // 打印结果
+        // Print result
+        System.out.println("Success! Session ID: " + response.getSessionId());
+        System.out.println("Success! Checkout URL: " + response.getUrl());
+        System.out.println("Success! Customer ID: " + response.getCustomerId());
     }
 }

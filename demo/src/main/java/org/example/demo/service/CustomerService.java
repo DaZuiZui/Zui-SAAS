@@ -2,6 +2,8 @@ package org.example.demo.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.stripe.exception.StripeException;
+import org.example.demo.domain.dto.CheckoutSessionResponse;
+import org.example.demo.domain.dto.CreateCheckoutSessionRequest;
 import org.example.demo.domain.entity.Customer;
 
 /**
@@ -28,4 +30,14 @@ public interface CustomerService extends IService<Customer> {
      * @return 客户信息
      */
     Customer getByUserId(Long userId);
+    
+    /**
+     * 创建结账会话
+     * Create checkout session
+     * 
+     * @param request 创建结账会话请求
+     * @return 结账会话响应
+     * @throws StripeException Stripe API异常
+     */
+    CheckoutSessionResponse createCheckoutSession(CreateCheckoutSessionRequest request) throws StripeException;
 }
