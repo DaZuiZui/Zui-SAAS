@@ -44,7 +44,7 @@ public class StripeProduct extends BaseEntity {
     private String description;
 
     /**
-     * 价格（美分）
+     * 价格（分）
      */
     private Long unitAmount;
 

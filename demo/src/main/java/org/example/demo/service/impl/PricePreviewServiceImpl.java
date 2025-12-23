@@ -133,10 +133,10 @@ public class PricePreviewServiceImpl implements PricePreviewService {
     }
     
     /**
-     * 格式化金额（美分转美元）
-     * Format amount (cents to dollars)
+     * 格式化金额（分转元）
+     * Format amount (cents to currency unit)
      * 
-     * @param amountInCents 美分金额
+     * @param amountInCents 金额（分）
      * @param currency 货币类型
      * @return 格式化后的金额字符串
      */

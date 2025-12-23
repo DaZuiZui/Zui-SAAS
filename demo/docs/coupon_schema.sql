@@ -1,0 +1,28 @@
+-- Stripe优惠券表
+CREATE TABLE IF NOT EXISTS `stripe_coupon` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `stripe_coupon_id` varchar(100) NOT NULL COMMENT 'Stripe平台的优惠券ID',
+  `name` varchar(100) NOT NULL COMMENT '优惠券名称',
+  `coupon_type` varchar(20) NOT NULL COMMENT '优惠券类型：percent/amount',
+  `percent_off` decimal(5,2) DEFAULT NULL COMMENT '百分比折扣（如20.00表示20%）',
+  `amount_off` bigint(20) DEFAULT NULL COMMENT '固定金额折扣（美分）',
+  `currency` varchar(10) DEFAULT NULL COMMENT '货币类型（固定金额折扣时使用）',
+  `duration` varchar(20) NOT NULL COMMENT '持续时间类型：forever/once/repeating',
+  `duration_in_months` int(11) DEFAULT NULL COMMENT '持续月数（duration为repeating时使用）',
+  `max_redemptions` int(11) DEFAULT NULL COMMENT '最大使用次数（null表示无限制）',
+  `times_redeemed` int(11) NOT NULL DEFAULT '0' COMMENT '已使用次数',
+  `redeem_by` bigint(20) DEFAULT NULL COMMENT '过期时间（时间戳）',
+  `valid` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否有效：1-有效 0-无效',
+  `create_by` varchar(50) DEFAULT NULL COMMENT '创建人',
+  `create_at` bigint(20) NOT NULL COMMENT '创建时间（时间戳）',
+  `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态：0-正常 1-删除',
+  `update_at` bigint(20) DEFAULT NULL COMMENT '修改时间（时间戳）',
+  `update_by` varchar(50) DEFAULT NULL COMMENT '修改人',
+  `version` int(11) NOT NULL DEFAULT '0' COMMENT '乐观锁版本号',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_stripe_coupon_id` (`stripe_coupon_id`),
+  KEY `idx_valid` (`valid`),
+  KEY `idx_status` (`status`),
+  KEY `idx_coupon_type` (`coupon_type`),
+  KEY `idx_redeem_by` (`redeem_by`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Stripe优惠券表';

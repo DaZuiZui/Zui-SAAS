@@ -2,12 +2,13 @@ package org.example.demo.stripe;
 
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
-import com.stripe.model.Coupon;
-import com.stripe.param.CouponCreateParams;
 import org.example.demo.config.StripeConfig;
+import org.example.demo.domain.dto.CreateCouponRequest;
 import org.example.demo.domain.dto.PricePreviewRequest;
 import org.example.demo.domain.dto.PricePreviewResponse;
+import org.example.demo.domain.entity.StripeCoupon;
 import org.example.demo.service.PricePreviewService;
+import org.example.demo.service.StripeCouponService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,6 +28,9 @@ public class PricePreviewTest {
 
     @Resource
     private PricePreviewService pricePreviewService;
+
+    @Resource
+    private StripeCouponService stripeCouponService;
 
     @BeforeEach
     public void setup() {
@@ -59,10 +63,10 @@ public class PricePreviewTest {
         System.out.println("========== 测试价格预览（百分比优惠券） ==========");
 
         // 先创建一个测试优惠券（20% off）
-        String couponId = createTestPercentCoupon();
+        String couponId = "FLASH30";
 
         PricePreviewRequest request = new PricePreviewRequest();
-        request.setStripePriceId("price_1QWlRLKLYtCwgmMIiRF1hfmT"); // 替换为你的实际Price ID
+        request.setStripePriceId("price_1Sh6fVLmuHVoRgEW1neODFnY"); // 替换为你的实际Price ID
         request.setCouponCode(couponId);
         request.setQuantity(1);
 
@@ -75,22 +79,22 @@ public class PricePreviewTest {
      * 测试价格预览 - 使用固定金额优惠券
      * Test price preview with amount off coupon
      */
-    @Test
-    public void testPricePreviewWithAmountCoupon() throws StripeException {
-        System.out.println("========== 测试价格预览（固定金额优惠券） ==========");
-
-        // 先创建一个测试优惠券（减500分）
-        String couponId = createTestAmountCoupon();
-
-        PricePreviewRequest request = new PricePreviewRequest();
-        request.setStripePriceId("price_1QWlRLKLYtCwgmMIiRF1hfmT"); // 替换为你的实际Price ID
-        request.setCouponCode(couponId);
-        request.setQuantity(1);
-
-        PricePreviewResponse response = pricePreviewService.getPricePreview(request);
-
-        printResponse(response);
-    }
+//    @Test
+//    public void testPricePreviewWithAmountCoupon() throws StripeException {
+//        System.out.println("========== 测试价格预览（固定金额优惠券） ==========");
+//
+//        // 先创建一个测试优惠券（减500分）
+//        String couponId = createTestAmountCoupon();
+//
+//        PricePreviewRequest request = new PricePreviewRequest();
+//        request.setStripePriceId("price_1QWlRLKLYtCwgmMIiRF1hfmT"); // 替换为你的实际Price ID
+//        request.setCouponCode(couponId);
+//        request.setQuantity(1);
+//
+//        PricePreviewResponse response = pricePreviewService.getPricePreview(request);
+//
+//        printResponse(response);
+//    }
 
     /**
      * 测试价格预览 - 多个数量
@@ -100,7 +104,7 @@ public class PricePreviewTest {
     public void testPricePreviewWithMultipleQuantity() throws StripeException {
         System.out.println("========== 测试价格预览（多个数量 + 优惠券） ==========");
 
-        String couponId = createTestPercentCoupon();
+        String couponId = "FLASH30";
 
         PricePreviewRequest request = new PricePreviewRequest();
         request.setStripePriceId("price_1QWlRLKLYtCwgmMIiRF1hfmT"); // 替换为你的实际Price ID
@@ -128,51 +132,6 @@ public class PricePreviewTest {
         PricePreviewResponse response = pricePreviewService.getPricePreview(request);
 
         printResponse(response);
-    }
-
-    /**
-     * 创建测试百分比优惠券
-     * Create test percentage coupon
-     */
-    private String createTestPercentCoupon() throws StripeException {
-        try {
-            CouponCreateParams params = CouponCreateParams.builder()
-                    .setPercentOff(BigDecimal.valueOf(20.0)) // 20% off
-                    .setDuration(CouponCreateParams.Duration.FOREVER)
-                    .setName("Test 20% Discount")
-                    .build();
-
-            Coupon coupon = Coupon.create(params);
-            System.out.println("创建百分比优惠券成功: " + coupon.getId());
-            return coupon.getId();
-        } catch (StripeException e) {
-            // 如果优惠券已存在，使用一个默认的
-            System.out.println("使用现有优惠券");
-            return "TEST20PERCENT"; // 需要在Stripe后台手动创建
-        }
-    }
-
-    /**
-     * 创建测试固定金额优惠券
-     * Create test amount off coupon
-     */
-    private String createTestAmountCoupon() throws StripeException {
-        try {
-            CouponCreateParams params = CouponCreateParams.builder()
-                    .setAmountOff(500L) // 减5美元（500分）
-                    .setCurrency("usd")
-                    .setDuration(CouponCreateParams.Duration.FOREVER)
-                    .setName("Test $5 Off")
-                    .build();
-
-            Coupon coupon = Coupon.create(params);
-            System.out.println("创建固定金额优惠券成功: " + coupon.getId());
-            return coupon.getId();
-        } catch (StripeException e) {
-            // 如果优惠券已存在，使用一个默认的
-            System.out.println("使用现有优惠券");
-            return "TEST5OFF"; // 需要在Stripe后台手动创建
-        }
     }
 
     /**

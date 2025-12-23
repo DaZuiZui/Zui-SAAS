@@ -22,13 +22,13 @@ public class PricePreviewResponse {
     private String productName;
     
     /**
-     * 原价（美分）
+     * 原价（分）
      * Original price in cents
      */
     private Long originalAmount;
     
     /**
-     * 小计（美分）= 原价 * 数量
+     * 小计（分）= 原价 * 数量
      * Subtotal in cents = original price * quantity
      */
     private Long subtotalAmount;
@@ -46,13 +46,13 @@ public class PricePreviewResponse {
     private String couponName;
     
     /**
-     * 折扣金额（美分）
+     * 折扣金额（分）
      * Discount amount in cents
      */
     private Long discountAmount;
     
     /**
-     * 最终金额（美分）
+     * 最终金额（分）
      * Final amount in cents
      */
     private Long finalAmount;
@@ -88,25 +88,25 @@ public class PricePreviewResponse {
     private String couponValue;
     
     /**
-     * 原价（美元格式化）
+     * 原价（格式化）
      * Original price formatted
      */
     private String originalAmountFormatted;
     
     /**
-     * 小计（美元格式化）
+     * 小计（格式化）
      * Subtotal formatted
      */
     private String subtotalAmountFormatted;
     
     /**
-     * 折扣金额（美元格式化）
+     * 折扣金额（格式化）
      * Discount amount formatted
      */
     private String discountAmountFormatted;
     
     /**
-     * 最终金额（美元格式化）
+     * 最终金额（格式化）
      * Final amount formatted
      */
     private String finalAmountFormatted;
