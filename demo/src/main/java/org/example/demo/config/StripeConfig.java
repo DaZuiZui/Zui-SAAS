@@ -7,5 +7,7 @@ import org.springframework.stereotype.Component;
 public class StripeConfig {
     @Value("${stripe.privateKey}")
     public String key;
-
+    
+    @Value("${stripe.webhookSecret}")
+    public String webhookSecret;
 }
