@@ -55,10 +55,11 @@ public class CustomerTest {
         // 构造测试数据
         // Build test data
         CreateCheckoutSessionRequest request = new CreateCheckoutSessionRequest();
-        request.setUserId(1001L); // 使用已存在的用户ID
-        request.setPriceId("price_1Sh5yHLmuHVoRgEWkwERKweq"); // 使用已创建的价格ID
+        request.setUserId(1002L); // 使用已存在的用户ID
+        request.setPriceId("price_1Sh6fVLmuHVoRgEW1neODFnY"); // 使用已创建的价格ID
         request.setSuccessUrl("https://example.com/success?session_id={CHECKOUT_SESSION_ID}");
         request.setCancelUrl("https://example.com/cancel");
+        request.setCouponCode("WELCOME10");
 
         // 调用服务创建结账会话
         // Call service to create checkout session
@@ -69,5 +70,34 @@ public class CustomerTest {
         System.out.println("Success! Session ID: " + response.getSessionId());
         System.out.println("Success! Checkout URL: " + response.getUrl());
         System.out.println("Success! Customer ID: " + response.getCustomerId());
+    }
+
+    /**
+     * 测试创建带优惠券的结账会话
+     * Test create checkout session with coupon
+     */
+    @Test
+    public void testCreateCheckoutSessionWithCoupon() throws StripeException {
+        System.out.println("========== 测试创建带优惠券的结账会话 ==========");
+
+        // 构造测试数据
+        CreateCheckoutSessionRequest request = new CreateCheckoutSessionRequest();
+        request.setUserId(1001L); // 使用已存在的用户ID
+        request.setPriceId("price_1Sh5yHLmuHVoRgEWkwERKweq"); // 使用已创建的价格ID
+        request.setCouponCode("TEST20PERCENT"); // 使用优惠券代码
+        request.setSuccessUrl("https://example.com/success?session_id={CHECKOUT_SESSION_ID}");
+        request.setCancelUrl("https://example.com/cancel");
+
+        // 调用服务创建结账会话
+        CheckoutSessionResponse response = customerService.createCheckoutSession(request);
+
+        // 打印结果
+        System.out.println("\n========== 结账会话创建成功 ==========");
+        System.out.println("Session ID: " + response.getSessionId());
+        System.out.println("Checkout URL: " + response.getUrl());
+        System.out.println("Customer ID: " + response.getCustomerId());
+        System.out.println("优惠券: TEST20PERCENT (20% off)");
+        System.out.println("\n提示：访问 Checkout URL 完成支付流程");
+        System.out.println("=========================================\n");
     }
 }

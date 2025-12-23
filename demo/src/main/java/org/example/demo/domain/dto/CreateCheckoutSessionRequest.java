@@ -22,6 +22,12 @@ public class CreateCheckoutSessionRequest {
     private String priceId;
     
     /**
+     * 优惠券代码（可选）
+     * Coupon code (optional)
+     */
+    private String couponCode;
+    
+    /**
      * 支付成功后跳转URL
      * Success redirect URL
      */

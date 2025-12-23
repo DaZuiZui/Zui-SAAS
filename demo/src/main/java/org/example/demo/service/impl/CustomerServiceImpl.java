@@ -104,7 +104,8 @@ public class CustomerServiceImpl extends ServiceImpl<CustomerMapper, Customer> i
      */
     @Override
     public CheckoutSessionResponse createCheckoutSession(CreateCheckoutSessionRequest request) throws StripeException {
-        logger.info("开始创建结账会话: userId={}, priceId={}", request.getUserId(), request.getPriceId());
+        logger.info("开始创建结账会话: userId={}, priceId={}, couponCode={}", 
+                request.getUserId(), request.getPriceId(), request.getCouponCode());
         
         // 设置Stripe API Key
         Stripe.apiKey = stripeConfig.key;
@@ -119,7 +120,7 @@ public class CustomerServiceImpl extends ServiceImpl<CustomerMapper, Customer> i
         
         // 构建Checkout Session参数
         // Build checkout session params
-        SessionCreateParams params = SessionCreateParams.builder()
+        SessionCreateParams.Builder paramsBuilder = SessionCreateParams.builder()
                 .setMode(SessionCreateParams.Mode.SUBSCRIPTION) // 订阅模式
                 .setCustomer(customer.getStripeCustomerId()) // 关联客户
                 .addLineItem(
@@ -128,12 +129,22 @@ public class CustomerServiceImpl extends ServiceImpl<CustomerMapper, Customer> i
                                 .setQuantity(1L) // 数量
                                 .build())
                 .setSuccessUrl(request.getSuccessUrl()) // 成功回调URL
-                .setCancelUrl(request.getCancelUrl()) // 取消回调URL
-                .build();
+                .setCancelUrl(request.getCancelUrl()); // 取消回调URL
+        
+        // 如果提供了优惠券代码，添加到会话中
+        // Add coupon code if provided
+        if (request.getCouponCode() != null && !request.getCouponCode().trim().isEmpty()) {
+            paramsBuilder.addDiscount(
+                    SessionCreateParams.Discount.builder()
+                            .setCoupon(request.getCouponCode())
+                            .build()
+            );
+            logger.info("已应用优惠券: {}", request.getCouponCode());
+        }
         
         // 创建Checkout Session
         // Create checkout session
-        Session session = Session.create(params);
+        Session session = Session.create(paramsBuilder.build());
         logger.info("结账会话创建成功: sessionId={}, url={}", session.getId(), session.getUrl());
         
         // 构建响应
