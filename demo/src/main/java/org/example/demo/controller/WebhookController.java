@@ -49,8 +49,35 @@ public class WebhookController {
 
             logger.info("收到合法的Stripe Webhook回调！事件类型: {}", event.getType());
 
-            // TODO: 在这里处理不同的事件类型
-            // 例如: checkout.session.completed, customer.subscription.created等
+            // 事件分发
+            switch (event.getType()) {
+                // 用户在 Stripe Checkout 页面完成支付（无论是订阅还是一次性付款）。
+                case "checkout.session.completed":
+                    logger.info("处理事件: checkout.session.completed");
+                    break;
+                // 新订阅创建（通常和 checkout.session.completed 一起出现）。
+                case "customer.subscription.created":
+                    logger.info("处理事件: customer.subscription.created");
+                    break;
+                // 订阅变更（如升级、降级、暂停、恢复）。
+                case "customer.subscription.updated":
+                    logger.info("处理事件: customer.subscription.updated");
+                    break;
+                // 订阅被取消（用户主动取消或到期未续费）。
+                case "customer.subscription.deleted":
+                    logger.info("处理事件: customer.subscription.deleted");
+                    break;
+                // 发票支付成功（订阅首次扣款或续费时都会触发）
+                case "invoice.payment_succeeded":
+                    logger.info("处理事件: invoice.payment_succeeded");
+                    break;
+                // 发票支付失败（如用户卡片过期、余额不足）。
+                case "invoice.payment_failed":
+                    logger.info("处理事件: invoice.payment_failed");
+                    break;
+                default:
+                    logger.info("收到未处理的事件类型: {}", event.getType());
+            }
 
             return ResponseEntity.ok("success");
 
